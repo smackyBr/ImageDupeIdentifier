@@ -50,7 +50,7 @@ jobs:
             -o publish
           New-Item -ItemType Directory -Force dist | Out-Null
           Compress-Archive -Path publish/* -DestinationPath "dist/ImageDupe-$version-${{ matrix.rid }}.zip"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.rid }}
           path: dist/*.zip
@@ -78,7 +78,7 @@ jobs:
             -p:Version="$version" \
             -o publish
           bash build/package-macos.sh "${{ matrix.rid }}" "$version" publish dist
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.rid }}
           path: dist/*.zip
