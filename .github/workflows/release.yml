@@ -102,7 +102,7 @@ jobs:
         run: sha256sum *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
 
       # Cryptographic proof that these files were built by THIS repo's workflow from THIS commit.
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v4
         with:
           subject-path: dist/*.zip
 
