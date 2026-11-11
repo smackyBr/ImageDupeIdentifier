@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The engine: scanning, hashing, grouping duplicates. No UI code, no platform code.
+       Everything here is unit-testable and shared by Windows and Mac. -->
+  <PropertyGroup>
+    <RootNamespace>ImageDupe.Core</RootNamespace>
+  </PropertyGroup>
+</Project>

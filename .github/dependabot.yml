@@ -1,0 +1,18 @@
+# Dependabot opens pull requests when a NuGet package or GitHub Action has an update
+# or a security fix. CI runs on each one; you review and merge.
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      avalonia:
+        patterns: ["Avalonia*"]
+      tests:
+        patterns: ["xunit*", "Microsoft.NET.Test.Sdk", "coverlet*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

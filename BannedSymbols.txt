@@ -1,0 +1,22 @@
+T:System.Net.Http.HttpClient;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Http.HttpClientHandler;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Http.SocketsHttpHandler;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.WebClient;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.WebRequest;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.HttpWebRequest;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.HttpListener;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Dns;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Sockets.Socket;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Sockets.TcpClient;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Sockets.TcpListener;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Sockets.UdpClient;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.WebSockets.ClientWebSocket;Offline app: no network access allowed (see SECURITY.md)
+T:System.Net.Mail.SmtpClient;Offline app: no network access allowed (see SECURITY.md)
+T:System.Diagnostics.Process;Launching other programs needs a security review; if approved, suppress at the single call site with a justification
+M:System.Reflection.Assembly.LoadFrom(System.String);Loading code at runtime is not allowed
+M:System.Reflection.Assembly.LoadFile(System.String);Loading code at runtime is not allowed
+M:System.Reflection.Assembly.Load(System.Byte[]);Loading code at runtime is not allowed
+M:System.IO.File.Delete(System.String);Photos are never permanently deleted directly - send them to Trash/Recycle Bin through the app's delete service
+M:System.IO.FileInfo.Delete;Photos are never permanently deleted directly - send them to Trash/Recycle Bin through the app's delete service
+M:System.IO.Directory.Delete(System.String);Folders are never permanently deleted directly
+M:System.IO.Directory.Delete(System.String,System.Boolean);Folders are never permanently deleted directly

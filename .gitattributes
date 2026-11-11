@@ -1,0 +1,8 @@
+# Normalize line endings so Windows and Mac checkouts don't fight.
+* text=auto
+# Shell scripts must keep Unix line endings or they won't run on macOS.
+*.sh text eol=lf
+*.png binary
+*.jpg binary
+*.ico binary
+*.icns binary

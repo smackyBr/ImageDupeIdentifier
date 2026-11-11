@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ImageDupe.App/ImageDupe.App.csproj" />
+    <Project Path="src/ImageDupe.Core/ImageDupe.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ImageDupe.Core.Tests/ImageDupe.Core.Tests.csproj" />
+  </Folder>
+</Solution>

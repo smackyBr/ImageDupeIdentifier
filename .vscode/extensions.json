@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csdevkit",
+    "avaloniateam.vscode-avalonia",
+    "editorconfig.editorconfig",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github"
+  ]
+}

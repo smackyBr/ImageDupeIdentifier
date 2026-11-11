@@ -1,0 +1,116 @@
+# Builds downloadable apps for Windows and Mac and publishes a GitHub Release.
+# Triggered ONLY when you push a version tag, e.g.:
+#   git tag v0.1.0
+#   git push origin v0.1.0
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - run: dotnet restore --locked-mode
+      - run: dotnet test --no-restore -c Release
+
+  windows:
+    needs: test
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        rid: [win-x64, win-arm64]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Publish
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          dotnet publish src/ImageDupe.App -c Release -r ${{ matrix.rid }} `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:DebugType=none `
+            -p:Version=$version `
+            -o publish
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Compress-Archive -Path publish/* -DestinationPath "dist/ImageDupe-$version-${{ matrix.rid }}.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}
+          path: dist/*.zip
+          if-no-files-found: error
+
+  macos:
+    needs: test
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        rid: [osx-arm64, osx-x64]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Publish and bundle .app
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          dotnet publish src/ImageDupe.App -c Release -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:DebugType=none \
+            -p:Version="$version" \
+            -o publish
+          bash build/package-macos.sh "${{ matrix.rid }}" "$version" publish dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}
+          path: dist/*.zip
+          if-no-files-found: error
+
+  publish-release:
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # create the release
+      id-token: write       # sign the build-provenance attestation
+      attestations: write   # store the attestation
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt
+
+      # Cryptographic proof that these files were built by THIS repo's workflow from THIS commit.
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/*.zip
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Image Dupe Identifier $GITHUB_REF_NAME" \
+            --generate-notes

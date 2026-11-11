@@ -1,0 +1,39 @@
+# Runs on every push to main and every pull request.
+# Builds and tests on real Windows and real macOS machines.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least privilege: this workflow can only read the repo.
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build & test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      # --locked-mode: fail if any package differs from packages.lock.json
+      - name: Restore (locked)
+        run: dotnet restore --locked-mode
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --no-build -c Release --verbosity normal
